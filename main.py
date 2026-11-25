@@ -36,16 +36,18 @@ def validate(text):
 
 def main():
     validate(ENTRY)
-    os.makedirs("/output", exist_ok=True)
-    with open("/output/entry.txt", "w", encoding="utf-8", newline="\n") as f:
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, "entry.txt")
+    with open(out_path, "w", encoding="utf-8", newline="\n") as f:
         f.write(ENTRY)
     # Post-write verification: what the scorer will read must be exactly
     # what was validated, so a partial or recoded write cannot slip through.
-    with open("/output/entry.txt", encoding="utf-8") as f:
+    with open(out_path, encoding="utf-8") as f:
         written = f.read()
     assert written == ENTRY, "written entry differs from the validated text"
     validate(written)
-    print(f"Wrote /output/entry.txt ({len(ENTRY)} chars, verified)")
+    print(f"Wrote {out_path} ({len(ENTRY)} chars, verified)")
 
 
 if __name__ == "__main__":
